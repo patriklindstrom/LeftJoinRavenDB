@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace LeftJoinRavenDB.Models
 {
-    class Teacher
+    public class Teacher
     { public String Name { get; set; }
       public String Gender { get; set; }
       public int YearsInService { get; set; }
     }
 
-    class TeachersMock :ITeachers
+    public class TeachersMock : ITeachers
     {
         public  List<Teacher> List { get; set; }
-        public void SetTeachersList()
+        public  TeachersMock()
         {
             List = new List<Teacher>()
             {
@@ -30,8 +30,9 @@ namespace LeftJoinRavenDB.Models
         }
     }
 
-     interface ITeachers
-     {
-         void SetTeachersList();
+  public   interface ITeachers
+  {
+       List<Teacher> List { get; set; }
+         
      }
 }

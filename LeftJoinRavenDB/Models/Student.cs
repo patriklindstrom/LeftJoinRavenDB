@@ -8,7 +8,7 @@ using LeftJoinRavenDB.Models;
 
 namespace LeftJoinRavenDB.Models
 {
-    class Student
+  public  class Student
     {
         public String Name { get; set; }
         public String HomeRoomTeacher { get; set; }
@@ -17,11 +17,11 @@ namespace LeftJoinRavenDB.Models
 }
 
 
-class StudentsMock :IStudents
+public class StudentsMock :IStudents
 {
     public List<Student> List { get; set; }
 
-    public void SetStudents()
+    public StudentsMock()
     {
         List = new List<Student>
         {
@@ -37,5 +37,6 @@ class StudentsMock :IStudents
 
 internal interface IStudents
 {
-    void SetStudents();
+     List<Student> List { get; set; }
+   
 }
