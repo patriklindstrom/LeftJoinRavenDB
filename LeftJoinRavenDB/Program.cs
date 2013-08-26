@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LeftJoinRavenDB.Models;
@@ -16,7 +17,7 @@ namespace LeftJoinRavenDB
             
            // SimpleMockupJoin();
            DocumentStore store= InitRavenDBStore();
-           FillRavenDBWithData(store);
+         //  FillRavenDBWithData(store);
            //  CreateRavenDBIndex(store);
             SimpleRavenDBJoin(store);
 
@@ -48,8 +49,10 @@ namespace LeftJoinRavenDB
             System.Console.WriteLine("Put data into RavenDB");
             using (IDocumentSession session = store.OpenSession())
             {
-                session.Store(new TeachersMock());
-                session.Store(new StudentsMock());
+                var teachers = new Teachers {List = new TeachersMock().List};
+                var students = new Students { List = new StudentsMock().List };
+                session.Store(teachers);
+                session.Store(students);
                 session.SaveChanges();
             }
         }

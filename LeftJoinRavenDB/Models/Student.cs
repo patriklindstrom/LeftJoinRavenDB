@@ -35,6 +35,11 @@ public class StudentsMock :IStudents
     }
 }
 
+public  class  Students:IStudents
+{
+   public List<Student> List { get; set; }
+
+}
 internal interface IStudents
 {
      List<Student> List { get; set; }

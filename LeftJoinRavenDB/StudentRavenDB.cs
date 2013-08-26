@@ -14,6 +14,8 @@ namespace LeftJoinRavenDB
             using (IDocumentSession session = store.OpenSession())
             {
                 var list = session.Load<StudentsMock>("StudentsMocks/1");
+                Students students = session.Load<Students>("Students/1");
+                _list = students.List;
             }
         }
 

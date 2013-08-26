@@ -30,6 +30,11 @@ namespace LeftJoinRavenDB.Models
         }
     }
 
+    public class Teachers : ITeachers
+    {
+     public   List<Teacher> List { get; set; }
+
+    }
   public   interface ITeachers
   {
        List<Teacher> List { get; set; }
