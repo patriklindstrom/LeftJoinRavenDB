@@ -18,7 +18,7 @@ namespace LeftJoinRavenDB
            DocumentStore store= InitRavenDBStore();
            FillRavenDBWithData(store);
            //  CreateRavenDBIndex(store);
-           // SimpleRavenDBJoin(store)
+            SimpleRavenDBJoin(store);
 
             System.Console.WriteLine("Enter To Exit..");
             System.Console.ReadLine();
@@ -31,12 +31,13 @@ namespace LeftJoinRavenDB
             var documentStore = new DocumentStore
             {
                 ConnectionStringName = "RavenHQ"
+
             };
             documentStore.Initialize();
             return documentStore;
         }
 
-        private static void CreateRavenDBIndex()
+        private static void CreateRavenDBIndex(DocumentStore store)
         { 
             throw new System.NotImplementedException();
         }
