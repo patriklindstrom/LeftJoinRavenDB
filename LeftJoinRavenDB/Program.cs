@@ -19,11 +19,41 @@ namespace LeftJoinRavenDB
            DocumentStore store= InitRavenDBStore();
          //  FillRavenDBWithData(store);
            //  CreateRavenDBIndex(store);
-            SimpleRavenDBJoin(store);
+           // SimpleRavenDBJoin(store);
+            SimpleQueryAbleRavenDBJoin(store);
 
             System.Console.WriteLine("Enter To Exit..");
             System.Console.ReadLine();
             ;
+        }
+
+        private static void SimpleQueryAbleRavenDBJoin(DocumentStore store)
+        {
+
+            IQueryable<Teacher> teachers;
+            IQueryable<Student> students;
+
+            using (IDocumentSession session = store.OpenSession())
+            {
+
+                students = session.Load<Students>("Students/1").List.AsQueryable();
+                teachers = session.Load<Teachers>("Teachers/1").List.AsQueryable();
+
+            }
+
+            var teacherStudenList = from tList in teachers
+                                    join sList in students
+                                    on tList.Name equals sList.HomeRoomTeacher into joinedList
+                                    from sList in joinedList.DefaultIfEmpty(new Student() { Name = "-" })
+                                    select new
+                                    {
+                                        TeacherName = tList.Name,
+                                        StudentName = sList.Name
+                                    };
+            foreach (var row in teacherStudenList)
+            {
+                System.Console.WriteLine("{0}\t{1}", row.TeacherName, row.StudentName);
+            }
         }
 
         private static DocumentStore InitRavenDBStore()
@@ -39,8 +69,11 @@ namespace LeftJoinRavenDB
         }
 
         private static void CreateRavenDBIndex(DocumentStore store)
-        { 
+        {
+
+
             throw new System.NotImplementedException();
+
         }
 
         
