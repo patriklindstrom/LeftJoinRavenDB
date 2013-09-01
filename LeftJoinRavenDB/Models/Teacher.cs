@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Raven.Client.Linq;
 
 namespace LeftJoinRavenDB.Models
 {
@@ -14,7 +15,7 @@ namespace LeftJoinRavenDB.Models
 
     public class TeachersMock : ITeachers
     {
-        public IQueryable<TeachersRavenDB> List { get; set; }
+        public IRavenQueryable<Teacher> ListRavenQueryableTeachers { get; set; }
         public  TeachersMock()
         {
             //List = new EnumerableQuery<Teacher>(new List<Teacher>()
@@ -33,12 +34,11 @@ namespace LeftJoinRavenDB.Models
 
     public class Teachers : ITeachers
     {
-     public   IQueryable<TeachersRavenDB> List { get; set; }
-
+        public IRavenQueryable<Teacher> ListRavenQueryableTeachers { get; set; }
     }
   public   interface ITeachers
   {
-       IQueryable<TeachersRavenDB> List { get; set; }
+       IRavenQueryable<Teacher> ListRavenQueryableTeachers { get; set; }
          
      }
 }

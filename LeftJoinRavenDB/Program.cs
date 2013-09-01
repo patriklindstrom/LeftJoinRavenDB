@@ -82,14 +82,14 @@ namespace LeftJoinRavenDB
         private static void FillRavenDBWithData(DocumentStore store)
         { // Run Install-Package RavenDB.Client -Pre
             System.Console.WriteLine("Put data into RavenDB");
-            using (IDocumentSession session = store.OpenSession())
-            {
-                var teachers = new Teachers {List = new TeachersMock().List};
-                var students = new Students { List = new StudentsMock().List };
-                session.Store(teachers);
-                session.Store(students);
-                session.SaveChanges();
-            }
+            //using (IDocumentSession session = store.OpenSession())
+            //{
+            //    var teachers = new Teachers {List = new TeachersMock().List};
+            //    var students = new Students { List = new StudentsMock().List };
+            //    session.Store(teachers);
+            //    session.Store(students);
+            //    session.SaveChanges();
+            //}
         }
 
         public static void SimpleMockupJoin()
@@ -105,7 +105,7 @@ namespace LeftJoinRavenDB
         {
             
             
-            var teacherStudenList = from tList in teachers.List
+            var teacherStudenList = from tList in teachers.ListRavenQueryableTeachers
                                     join sList in students.List
                                     on tList.Name equals sList.HomeRoomTeacher into joinedList
                                     from sList in joinedList.DefaultIfEmpty(new Student() { Name = "-" })

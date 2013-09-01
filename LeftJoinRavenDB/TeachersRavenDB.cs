@@ -11,30 +11,17 @@ namespace LeftJoinRavenDB
 {
     public class TeachersRavenDB : ITeachers
     {
-
-
-        private IQueryable<TeachersRavenDB> _list;
-
         public TeachersRavenDB(DocumentStore store)
         {
             using (IDocumentSession session =store.OpenSession())
             {
-                var teachers = session.Query<TeachersRavenDB>().AsQueryable();
+                var teachers = session.Query<Teacher>();
                 Debug.Assert(teachers != null, "teachers != null");
-                _list = teachers;
+                ListRavenQueryableTeachers = teachers;
             }
         }
 
-        public IQueryable<TeachersRavenDB> List
-        {
-            get
-            {
-                return _list;
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+
+        public IRavenQueryable<Teacher> ListRavenQueryableTeachers { get; set; }
     }
 }
