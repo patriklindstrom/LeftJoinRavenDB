@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,8 +20,8 @@ namespace LeftJoinRavenDB
            DocumentStore store= InitRavenDBStore();
          //  FillRavenDBWithData(store);
            //  CreateRavenDBIndex(store);
-           // SimpleRavenDBJoin(store);
-            SimpleQueryAbleRavenDBJoin(store);
+            SimpleRavenDBJoin(store);
+            //SimpleQueryAbleRavenDBJoin(store);
 
             System.Console.WriteLine("Enter To Exit..");
             System.Console.ReadLine();
@@ -30,30 +31,31 @@ namespace LeftJoinRavenDB
         private static void SimpleQueryAbleRavenDBJoin(DocumentStore store)
         {
 
-            IQueryable<Teacher> teachers;
-            IQueryable<Student> students;
+            //IQueryable<Teacher> teachers;
+            //IQueryable<Student> students;
 
-            using (IDocumentSession session = store.OpenSession())
-            {
+            //using (IDocumentSession session = store.OpenSession())
+            //{
 
-                students = session.Load<Students>("Students/1").List.AsQueryable();
-                teachers = session.Load<Teachers>("Teachers/1").List.AsQueryable();
+            //    //students = session.Load<Students>("Students/1").List.AsQueryable();
+            //    //teachers = session.Load<Teachers>("Teachers/1").List.AsQueryable();
 
-            }
+            //}
 
-            var teacherStudenList = from tList in teachers
-                                    join sList in students
-                                    on tList.Name equals sList.HomeRoomTeacher into joinedList
-                                    from sList in joinedList.DefaultIfEmpty(new Student() { Name = "-" })
-                                    select new
-                                    {
-                                        TeacherName = tList.Name,
-                                        StudentName = sList.Name
-                                    };
-            foreach (var row in teacherStudenList)
-            {
-                System.Console.WriteLine("{0}\t{1}", row.TeacherName, row.StudentName);
-            }
+            //var teacherStudenList = from tList in teachers
+            //                        join sList in students
+            //                        on tList.Name equals sList.HomeRoomTeacher into joinedList
+            //                        from sList in joinedList.DefaultIfEmpty(new Student() { Name = "-" })
+            //                        select new
+            //                        {
+            //                            TeacherName = tList.Name,
+            //                            StudentName = sList.Name
+            //                        };
+            //foreach (var row in teacherStudenList)
+            //{
+            //    System.Console.WriteLine("{0}\t{1}", row.TeacherName, row.StudentName);
+            //}
+            throw new NotImplementedException();
         }
 
         private static DocumentStore InitRavenDBStore()
@@ -101,6 +103,8 @@ namespace LeftJoinRavenDB
 
         public static void SimpleJoin(ITeachers teachers, IStudents students)
         {
+            
+            
             var teacherStudenList = from tList in teachers.List
                                     join sList in students.List
                                     on tList.Name equals sList.HomeRoomTeacher into joinedList

@@ -1,28 +1,29 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using LeftJoinRavenDB.Models;
 using Raven.Client;
 using Raven.Client.Document;
+using Raven.Client.Linq;
 
 namespace LeftJoinRavenDB
 {
     public class StudentRavenDB : IStudents
     {
-        private List<Student> _list;
+        private IQueryable<Student> _list;
 
         public StudentRavenDB(DocumentStore store)
         {
             using (IDocumentSession session = store.OpenSession())
             {
-                var list = session.Load<StudentsMock>("StudentsMocks/1");
-                Students students = session.Load<Students>("Students/1");
-                _list = students.List;
+
+                IQueryable<StudentRavenDB> students = session.Query<StudentRavenDB>();
             }
         }
 
-        public List<Student> List
+        public IQueryable<Student> List
         {
             get { return _list; }
-            set { _list = value; }
+            set { _list = value as IQueryable<Student>; }
         }
     }
 }

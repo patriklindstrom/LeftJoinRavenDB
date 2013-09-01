@@ -19,29 +19,34 @@ namespace LeftJoinRavenDB.Models
 
 public class StudentsMock :IStudents
 {
-    public List<Student> List { get; set; }
+    public IQueryable<Student> List { get; set; }
 
     public StudentsMock()
     {
-        List = new List<Student>
+        List = new EnumerableQuery<Student>(new List<Student>()
         {
-                new Student{Name = "Stymie",HasBicycle = false,HomeRoomTeacher = "Mrs Thatcher"}
-            ,   new Student{Name = "Spanky",HasBicycle = true ,HomeRoomTeacher = "Mrs Thatcher"}
-            ,   new Student{Name = "Alfalfa",HasBicycle = true ,HomeRoomTeacher = "Mr Blair"}
-            ,   new Student{Name = "Darla",HasBicycle = false ,HomeRoomTeacher = "Mr Blair"}
-            ,   new Student{Name = "Jane",HasBicycle = false ,HomeRoomTeacher = "Mr Blair"}
-            ,   new Student{Name = "Buckwheat",HasBicycle = false ,HomeRoomTeacher = "Mr Major"}
-        };
+            new Student {Name = "Stymie", HasBicycle = false, HomeRoomTeacher = "Mrs Thatcher"}
+            ,
+            new Student {Name = "Spanky", HasBicycle = true, HomeRoomTeacher = "Mrs Thatcher"}
+            ,
+            new Student {Name = "Alfalfa", HasBicycle = true, HomeRoomTeacher = "Mr Blair"}
+            ,
+            new Student {Name = "Darla", HasBicycle = false, HomeRoomTeacher = "Mr Blair"}
+            ,
+            new Student {Name = "Jane", HasBicycle = false, HomeRoomTeacher = "Mr Blair"}
+            ,
+            new Student {Name = "Buckwheat", HasBicycle = false, HomeRoomTeacher = "Mr Major"}
+        });
     }
 }
 
 public  class  Students:IStudents
 {
-   public List<Student> List { get; set; }
+    public IQueryable<Student> List { get; set; }
 
 }
 internal interface IStudents
 {
-     List<Student> List { get; set; }
+     IQueryable<Student> List { get; set; }
    
 }

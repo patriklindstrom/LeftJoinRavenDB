@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using LeftJoinRavenDB.Models;
 using Raven.Client;
 using Raven.Client.Document;
+using Raven.Client.Linq;
 
 namespace LeftJoinRavenDB
 {
@@ -10,18 +13,19 @@ namespace LeftJoinRavenDB
     {
 
 
-        private List<Teacher> _list;
+        private IQueryable<TeachersRavenDB> _list;
 
         public TeachersRavenDB(DocumentStore store)
         {
             using (IDocumentSession session =store.OpenSession())
             {
-                Teachers teachers = session.Load<Teachers>("Teachers/1");
-                _list = teachers.List;
+                var teachers = session.Query<TeachersRavenDB>().AsQueryable();
+                Debug.Assert(teachers != null, "teachers != null");
+                _list = teachers;
             }
         }
 
-        public List<Teacher> List
+        public IQueryable<TeachersRavenDB> List
         {
             get
             {
