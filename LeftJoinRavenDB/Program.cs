@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,9 +19,10 @@ namespace LeftJoinRavenDB
             
            // SimpleMockupJoin();
            DocumentStore store= InitRavenDBStore();
-         //  FillRavenDBWithData(store);
+         // FillRavenDBWithData(store);
+           SimpleRavenDBJoin(store);
            //  CreateRavenDBIndex(store);
-            SimpleRavenDBJoin(store);
+            //SimpleRavenDBJoin(store);
             //SimpleQueryAbleRavenDBJoin(store);
 
             System.Console.WriteLine("Enter To Exit..");
@@ -82,23 +84,97 @@ namespace LeftJoinRavenDB
         private static void FillRavenDBWithData(DocumentStore store)
         { // Run Install-Package RavenDB.Client -Pre
             System.Console.WriteLine("Put data into RavenDB");
-            //using (IDocumentSession session = store.OpenSession())
-            //{
-            //    var teachers = new Teachers {List = new TeachersMock().List};
-            //    var students = new Students { List = new StudentsMock().List };
-            //    session.Store(teachers);
-            //    session.Store(students);
-            //    session.SaveChanges();
-            //}
+            using (IDocumentSession session = store.OpenSession())
+            {
+                session.Store(new Teacher {Name = "Mrs Thatcher", Gender = "Female", YearsInService = 12});
+                session.Store(new Teacher {Name = "Mr Cameron", Gender = "Male", YearsInService = 2});
+                session.Store(new Teacher {Name = "Mr Walpole", Gender = "Male", YearsInService = 21});
+                session.Store(new Teacher {Name = "Mr Blair", Gender = "Male", YearsInService = 10});
+                session.Store(new Teacher {Name = "Mr Major", Gender = "Male", YearsInService = 7});
+
+                session.Store(new Student {Name = "Stymie", HasBicycle = false, HomeRoomTeacher = "Mrs Thatcher"});
+                session.Store(new Student {Name = "Spanky", HasBicycle = true, HomeRoomTeacher = "Mrs Thatcher"});
+                session.Store(new Student {Name = "Alfalfa", HasBicycle = true, HomeRoomTeacher = "Mr Blair"});
+                session.Store(new Student {Name = "Darla", HasBicycle = false, HomeRoomTeacher = "Mr Blair"});
+                session.Store(new Student {Name = "Jane", HasBicycle = false, HomeRoomTeacher = "Mr Blair"});
+                session.Store(new Student {Name = "Buckwheat", HasBicycle = false, HomeRoomTeacher = "Mr Major"});
+                session.SaveChanges();
+            }
         }
 
         public static void SimpleMockupJoin()
         {
-            SimpleJoin(new TeachersMock(), new StudentsMock());
+           
+        }
+        public static void SimpleRavenDBJoinFail(DocumentStore store)
+        {
+
+            using (IDocumentSession session = store.OpenSession())
+            {
+                var teacherlist = session.Query<Teacher>();
+                var studentlist = session.Query<Student>();
+                Debug.Assert(teacherlist != null, "teachers list != null");
+
+
+
+
+            foreach (var row in teacherlist)
+            {
+                System.Console.WriteLine("{0}\t", row.Name);
+            }
+            foreach (var row in studentlist)
+            {
+                System.Console.WriteLine("{0}\t", row.Name);
+            }
+            var combinedList = from teacher in teacherlist
+                               join student in studentlist on teacher.Name equals student.HomeRoomTeacher
+                               select new
+                               {
+                                   TeachersName = teacher.Name
+                                   ,
+                                   StudentName = student.Name
+                               };
+
+            foreach (var row in combinedList)
+            {
+                System.Console.WriteLine("{0}\t{1}", row.TeachersName, row.StudentName);
+            }
+            } // end session           
         }
         public static void SimpleRavenDBJoin(DocumentStore store)
         {
-            SimpleJoin(new TeachersRavenDB(store), new StudentRavenDB(store));
+            // http://ayende.com/blog/89089/ravendb-multi-maps-reduce-indexes
+            // http://ravendb.net/docs/client-api/querying/using-linq-to-query-ravendb#page
+            using (IDocumentSession session = store.OpenSession())
+            {
+                var teacherlist = session.Query<Teacher>();
+                var studentlist = session.Query<Student>();
+                Debug.Assert(teacherlist != null, "teachers list != null");
+
+
+
+                foreach (var row in session.Query<Teacher>())
+                {
+                    System.Console.WriteLine("{0}\t", row.Name);
+                }
+                foreach (var row in session.Query<Student>())
+                {
+                    System.Console.WriteLine("{0}\t", row.Name);
+                }
+                var combinedList = from teacher in session.Query<Teacher>()
+                                   join student in session.Query<Student>() on teacher.Name equals student.HomeRoomTeacher
+                                   select new
+                                   {
+                                       TeachersName = teacher.Name
+                                       ,
+                                       StudentName = student.Name
+                                   };
+
+                foreach (var row in combinedList)
+                {
+                    System.Console.WriteLine("{0}\t{1}", row.TeachersName, row.StudentName);
+                }
+            } // end session           
         }
 
         public static void SimpleJoin(ITeachers teachers, IStudents students)
