@@ -93,7 +93,7 @@ namespace LeftJoinRavenDB
 
         private static void CreateRavenDBIndex(DocumentStore store)
         {
-
+            //http://ravendb.net/docs/2.5/client-api/querying/static-indexes/defining-static-index
 
             IndexCreation.CreateIndexes(typeof(TeacherCountsByStudent).Assembly, store);
 
