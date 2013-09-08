@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LeftJoinRavenDB.Models;
 using Raven.Client;
 using Raven.Client.Document;
+using Raven.Client.Indexes;
 
 namespace LeftJoinRavenDB
 {
@@ -19,15 +20,32 @@ namespace LeftJoinRavenDB
             
            // SimpleMockupJoin();
            DocumentStore store= InitRavenDBStore();
+           System.Console.WriteLine("Done Init RavenDB Start Join Workshop");
          // FillRavenDBWithData(store);
-           SimpleRavenDBJoin(store);
-           //  CreateRavenDBIndex(store);
+          // CreateRavenDBIndex(store);
+            MapReduceJoin(store);
+          // SimpleRavenDBJoin(store);
+            
             //SimpleRavenDBJoin(store);
             //SimpleQueryAbleRavenDBJoin(store);
 
             System.Console.WriteLine("Enter To Exit..");
             System.Console.ReadLine();
             ;
+        }
+
+        private static void MapReduceJoin(DocumentStore store)
+        {
+            using (var session = store.OpenSession())
+            {
+                var tss = session.Query<TeacherStudentStats, TeacherCountsByStudent>()
+                    .Where(x => x.TeacherName.StartsWith("Mrs Thatcher"))
+                    ;
+                foreach (var row in tss)
+                {
+                    System.Console.WriteLine("{0}\t{1}", row.TeacherName, row.ClassCount);
+                }
+            }
         }
 
         private static void SimpleQueryAbleRavenDBJoin(DocumentStore store)
@@ -69,6 +87,7 @@ namespace LeftJoinRavenDB
 
             };
             documentStore.Initialize();
+            
             return documentStore;
         }
 
@@ -76,7 +95,7 @@ namespace LeftJoinRavenDB
         {
 
 
-            throw new System.NotImplementedException();
+            IndexCreation.CreateIndexes(typeof(TeacherCountsByStudent).Assembly, store);
 
         }
 
