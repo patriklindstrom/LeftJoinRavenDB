@@ -51,6 +51,7 @@
     <Compile Include="CountTeachersStudentIndex.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Teacher.cs" />
+    <Compile Include="PageTextElement.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StudentRavenDB.cs" />

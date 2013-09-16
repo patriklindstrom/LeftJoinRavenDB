@@ -21,8 +21,9 @@ namespace LeftJoinRavenDB
            // SimpleMockupJoin();
            DocumentStore store= InitRavenDBStore();
            System.Console.WriteLine("Done Init RavenDB Start Join Workshop");
-         // FillRavenDBWithData(store);
-          // CreateRavenDBIndex(store);
+         FillRavenDBWithOneToManyData(store);
+            FillRavenDBWithSelfJoinData(store);
+           CreateRavenDBIndex(store);
             MapReduceJoin(store);
           // SimpleRavenDBJoin(store);
             
@@ -33,6 +34,7 @@ namespace LeftJoinRavenDB
             System.Console.ReadLine();
             ;
         }
+
 
         private static void MapReduceJoin(DocumentStore store)
         {
@@ -99,8 +101,27 @@ namespace LeftJoinRavenDB
 
         }
 
-        
-        private static void FillRavenDBWithData(DocumentStore store)
+        private static void FillRavenDBWithSelfJoinData(DocumentStore store)
+        {
+            System.Console.WriteLine("Put selfjoin data in RavenDB");
+            using (IDocumentSession session = store.OpenSession())
+            {
+                //Language english
+                session.Store(new PageTextElement { Page = "home", token = "Welcome", webtext = "Welcome to Aniara", language = "en", translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", token = "RulesOfBoarding", webtext = "Do not break line", language = "en", translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", token = "PriceModel", webtext = "Based on weight and oxygen consumption", language = "en", translator = "robot", CreationTime = DateTime.Now });
+                //Here comes the one line that is missing in other language should be visible in left join
+                session.Store(new PageTextElement { Page = "home", token = "RebateModel", webtext = "Truly Unique talent cant reduce price with 50% ", language = "en", translator = "robot", CreationTime = DateTime.Now });
+                //Language swedish
+                session.Store(new PageTextElement { Page = "home", token = "Welcome", webtext = "Välkommen till Aniara", language = "sv", translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", token = "RulesOfBoarding", webtext = "Träng den ej i kön", language = "sv", translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", token = "PriceModel", webtext = "Prist baseras på vikt och syreförbrukning", language = "sv", translator = "robot", CreationTime = DateTime.Now });
+
+                session.SaveChanges();
+            }
+        }
+ 
+        private static void FillRavenDBWithOneToManyData(DocumentStore store)
         { // Run Install-Package RavenDB.Client -Pre
             System.Console.WriteLine("Put data into RavenDB");
             using (IDocumentSession session = store.OpenSession())
@@ -218,4 +239,6 @@ namespace LeftJoinRavenDB
 
 
     }
+
+  
 }
