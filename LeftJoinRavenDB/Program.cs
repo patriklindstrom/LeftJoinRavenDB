@@ -21,10 +21,10 @@ namespace LeftJoinRavenDB
            // SimpleMockupJoin();
            DocumentStore store= InitRavenDBStore();
            System.Console.WriteLine("Done Init RavenDB Start Join Workshop");
-         FillRavenDBWithOneToManyData(store);
+        // FillRavenDBWithOneToManyData(store);
             FillRavenDBWithSelfJoinData(store);
            CreateRavenDBIndex(store);
-            MapReduceJoin(store);
+           // MapReduceJoin(store);
           // SimpleRavenDBJoin(store);
             
             //SimpleRavenDBJoin(store);
@@ -97,7 +97,9 @@ namespace LeftJoinRavenDB
         {
             //http://ravendb.net/docs/2.5/client-api/querying/static-indexes/defining-static-index
 
-            IndexCreation.CreateIndexes(typeof(TeacherCountsByStudent).Assembly, store);
+           // IndexCreation.CreateIndexes(typeof(TeacherCountsByStudent).Assembly, store);
+            // LeftJoinPageTextTranslations
+            IndexCreation.CreateIndexes(typeof(LeftJoinPageTextTranslations).Assembly, store);
 
         }
 
@@ -107,15 +109,15 @@ namespace LeftJoinRavenDB
             using (IDocumentSession session = store.OpenSession())
             {
                 //Language english
-                session.Store(new PageTextElement { Page = "home", token = "Welcome", webtext = "Welcome to Aniara", language = "en", translator = "robot", CreationTime = DateTime.Now });
-                session.Store(new PageTextElement { Page = "home", token = "RulesOfBoarding", webtext = "Do not break line", language = "en", translator = "robot", CreationTime = DateTime.Now });
-                session.Store(new PageTextElement { Page = "home", token = "PriceModel", webtext = "Based on weight and oxygen consumption", language = "en", translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", Token = "Welcome", Webtext = "Welcome to Aniara", Language = "en", Translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", Token = "RulesOfBoarding", Webtext = "Do not break line", Language = "en", Translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", Token = "PriceModel", Webtext = "Based on weight and oxygen consumption", Language = "en", Translator = "robot", CreationTime = DateTime.Now });
                 //Here comes the one line that is missing in other language should be visible in left join
-                session.Store(new PageTextElement { Page = "home", token = "RebateModel", webtext = "Truly Unique talent cant reduce price with 50% ", language = "en", translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", Token = "RebateModel", Webtext = "Truly Unique talent cant reduce price with 50% ", Language = "en", Translator = "robot", CreationTime = DateTime.Now });
                 //Language swedish
-                session.Store(new PageTextElement { Page = "home", token = "Welcome", webtext = "Välkommen till Aniara", language = "sv", translator = "robot", CreationTime = DateTime.Now });
-                session.Store(new PageTextElement { Page = "home", token = "RulesOfBoarding", webtext = "Träng den ej i kön", language = "sv", translator = "robot", CreationTime = DateTime.Now });
-                session.Store(new PageTextElement { Page = "home", token = "PriceModel", webtext = "Prist baseras på vikt och syreförbrukning", language = "sv", translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", Token = "Welcome", Webtext = "Välkommen till Aniara", Language = "sv", Translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", Token = "RulesOfBoarding", Webtext = "Träng den ej i kön", Language = "sv", Translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", Token = "PriceModel", Webtext = "Prist baseras på vikt och syreförbrukning", Language = "sv", Translator = "robot", CreationTime = DateTime.Now });
 
                 session.SaveChanges();
             }
