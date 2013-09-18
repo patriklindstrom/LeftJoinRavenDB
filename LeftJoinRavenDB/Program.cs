@@ -22,11 +22,11 @@ namespace LeftJoinRavenDB
            DocumentStore store= InitRavenDBStore();
            System.Console.WriteLine("Done Init RavenDB Start Join Workshop");
         // FillRavenDBWithOneToManyData(store);
-            FillRavenDBWithSelfJoinData(store);
+          //  FillRavenDBWithSelfJoinData(store);
            CreateRavenDBIndex(store);
            // MapReduceJoin(store);
           // SimpleRavenDBJoin(store);
-            
+           SimpleRavenDBSelfJoin(store);
             //SimpleRavenDBJoin(store);
             //SimpleQueryAbleRavenDBJoin(store);
 
@@ -35,6 +35,24 @@ namespace LeftJoinRavenDB
             ;
         }
 
+
+        private static void SimpleRavenDBSelfJoin(DocumentStore store)
+        {
+            using (var session = store.OpenSession())
+            {
+                var wt = session.Query<ComparePageTextElement, LeftJoinPageTextTranslations>()
+                    //.Where(x => x.TeacherName.StartsWith("Mrs Thatcher"))
+                    ;
+                Console.WriteLine("Write BaseElement and CompareElement");
+                // System.Console.WriteLine("{0}\t{1}", wt.BaseElement.Page, wt.CompareElement.Page);
+                foreach (var row in wt)
+                {
+                    System.Console.WriteLine("{0}\t{1}\t{2}\t{3}", 
+                        row.BaseElement.Page,row.BaseElement.Token,row.BaseElement.Language,row.BaseElement.Webtext, 
+                        row.CompareElement.Page,row.CompareElement.Token,row.CompareElement.Language,row.CompareElement.Webtext );
+                }
+            }
+        }
 
         private static void MapReduceJoin(DocumentStore store)
         {

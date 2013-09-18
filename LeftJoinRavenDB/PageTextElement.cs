@@ -72,15 +72,15 @@ namespace LeftJoinRavenDB
                 }
                 );
             Reduce = results => from result in results
-                                group result by new {Page=result.BaseElement.Page,Token=result.BaseElement,Language=result.BaseElement.Language}
+                                group result by new {Page=result.BaseElement.Page,Token=result.BaseElement.Token,Language=result.BaseElement.Language}
                                     into g
                                     select new
                                     {
                                       //  BaseElement = g.Select(x => new { Page = x.BaseElement.Page, Token = x.BaseElement, Language = x.BaseElement.Language }).Where(x => x != null).First(),
                                         BaseElement = g.Select(x => 
-                                            new { Page = x.BaseElement.Page, Token = x.BaseElement, Language = x.BaseElement.Language,x.BaseElement.Webtext,x.BaseElement.Translator }).First(x => x != null),
+                                            new { Page = x.BaseElement.Page, Token = x.BaseElement.Token, Language = x.BaseElement.Language,x.BaseElement.Webtext,x.BaseElement.Translator }).First(x => x != null),
                                         CompareElement = g.Select(z => 
-                                            new { Page = z.CompareElement.Page, Token = z.CompareElement, Language = z.CompareElement.Language,z.BaseElement.Webtext, z.BaseElement.Translator }).First(z => z != null),                                    
+                                            new { Page = z.CompareElement.Page, Token = z.CompareElement.Token, Language = z.CompareElement.Language,z.BaseElement.Webtext, z.BaseElement.Translator }).First(z => z != null),                                    
                                     };
             /*
              * Url: "/indexes/LeftJoinPageTextTranslations"
