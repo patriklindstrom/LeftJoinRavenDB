@@ -150,8 +150,8 @@ namespace LeftJoinRavenDB
                 session.Store(new PageTextElement { Page = "home", Token = "RebateModel", Webtext = "Truly Unique talent cant reduce price with 50% ", Language = "en", Translator = "robot", CreationTime = DateTime.Now });
                 //Language swedish
                 session.Store(new PageTextElement { Page = "home", Token = "Welcome", Webtext = "Välkommen till Aniara", Language = "sv", Translator = "robot", CreationTime = DateTime.Now });
-                session.Store(new PageTextElement { Page = "home", Token = "RulesOfBoarding", Webtext = "Träng den ej i kön", Language = "sv", Translator = "robot", CreationTime = DateTime.Now });
-                session.Store(new PageTextElement { Page = "home", Token = "PriceModel", Webtext = "Prist baseras på vikt och syreförbrukning", Language = "sv", Translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", Token = "RulesOfBoarding", Webtext = "Träng dig ej i kön", Language = "sv", Translator = "robot", CreationTime = DateTime.Now });
+                session.Store(new PageTextElement { Page = "home", Token = "PriceModel", Webtext = "Priset baseras på vikt och syreförbrukning", Language = "sv", Translator = "robot", CreationTime = DateTime.Now });
 
                 session.SaveChanges();
             }

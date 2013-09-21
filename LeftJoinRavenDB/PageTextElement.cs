@@ -8,6 +8,14 @@ using Raven.Client.Indexes;
 
 namespace LeftJoinRavenDB
 {
+
+    public class ComparePageTextElement
+    {
+        public string Page;
+        public string Token;
+        public string WebtextBase;
+        public string WebtextCompare;
+    }
     public class PageTextElement
     {
         public string Page;
@@ -19,13 +27,7 @@ namespace LeftJoinRavenDB
         
     }
 
-    public class ComparePageTextElement
-    {
-        public string Page;
-        public string Token;
-        public string WebtextBase;
-        public string WebtextCompare;
-    }
+
     public class ComparePageTextElementCount
     {
         public string Page;
