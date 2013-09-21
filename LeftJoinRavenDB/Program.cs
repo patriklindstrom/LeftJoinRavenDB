@@ -26,7 +26,7 @@ namespace LeftJoinRavenDB
            CreateRavenDBIndex(store);
            // MapReduceJoin(store);
           // SimpleRavenDBJoin(store);
-           SimpleRavenDBSelfJoin(store);
+           SimpleRavenDBCountSelfJoin(store);
             //SimpleRavenDBJoin(store);
             //SimpleQueryAbleRavenDBJoin(store);
 
@@ -41,7 +41,7 @@ namespace LeftJoinRavenDB
             using (var session = store.OpenSession())
             {
                 var wt = session.Query<ComparePageTextElement, LeftJoinPageTextTranslations>()
-                    //.Where(x => x.TeacherName.StartsWith("Mrs Thatcher"))
+                    
                     ;
                 Console.WriteLine("Write BaseElement and CompareElement");
                 // System.Console.WriteLine("{0}\t{1}", wt.BaseElement.Page, wt.CompareElement.Page);
@@ -49,6 +49,24 @@ namespace LeftJoinRavenDB
                 {
                     System.Console.WriteLine("{0}\t{1}\t{2}\t{3}", 
                         row.Page,row.Token,row.WebtextBase,row.WebtextCompare
+                        );
+                }
+            }
+        }
+
+        private static void SimpleRavenDBCountSelfJoin(DocumentStore store)
+        {
+            using (var session = store.OpenSession())
+            {
+                var wt = session.Query<ComparePageTextElementCount, LeftJoinPageTextTranslationsCount>()
+                    //.Where(x => x.TeacherName.StartsWith("Mrs Thatcher"))
+                    ;
+                Console.WriteLine("Write BaseElement and CompareElement");
+                // System.Console.WriteLine("{0}\t{1}", wt.BaseElement.Page, wt.CompareElement.Page);
+                foreach (var row in wt)
+                {
+                    System.Console.WriteLine("{0}\t{1}\t{2}",
+                        row.Page, row.Token, row.Count
                         );
                 }
             }
@@ -114,11 +132,9 @@ namespace LeftJoinRavenDB
         private static void CreateRavenDBIndex(DocumentStore store)
         {
             //http://ravendb.net/docs/2.5/client-api/querying/static-indexes/defining-static-index
-
-           // IndexCreation.CreateIndexes(typeof(TeacherCountsByStudent).Assembly, store);
-            // LeftJoinPageTextTranslations
+            IndexCreation.CreateIndexes(typeof(TeacherCountsByStudent).Assembly, store);
             IndexCreation.CreateIndexes(typeof(LeftJoinPageTextTranslations).Assembly, store);
-
+            IndexCreation.CreateIndexes(typeof(LeftJoinPageTextTranslationsCount).Assembly, store);
         }
 
         private static void FillRavenDBWithSelfJoinData(DocumentStore store)
@@ -126,7 +142,7 @@ namespace LeftJoinRavenDB
             System.Console.WriteLine("Put selfjoin data in RavenDB");
             using (IDocumentSession session = store.OpenSession())
             {
-                //Language english
+                //Language english  https://en.wikipedia.org/wiki/Aniara
                 session.Store(new PageTextElement { Page = "home", Token = "Welcome", Webtext = "Welcome to Aniara", Language = "en", Translator = "robot", CreationTime = DateTime.Now });
                 session.Store(new PageTextElement { Page = "home", Token = "RulesOfBoarding", Webtext = "Do not break line", Language = "en", Translator = "robot", CreationTime = DateTime.Now });
                 session.Store(new PageTextElement { Page = "home", Token = "PriceModel", Webtext = "Based on weight and oxygen consumption", Language = "en", Translator = "robot", CreationTime = DateTime.Now });

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace LeftJoinRavenDB
         public string Language;
         public string Translator;
         public DateTime CreationTime;
+        
     }
 
     public class ComparePageTextElement
@@ -24,6 +26,13 @@ namespace LeftJoinRavenDB
         public string WebtextBase;
         public string WebtextCompare;
     }
+    public class ComparePageTextElementCount
+    {
+        public string Page;
+        public string Token;
+        public string Webtext;
+        public int Count;
+    }
 
     public class LeftJoinPageTextTranslations : AbstractMultiMapIndexCreationTask<ComparePageTextElement>
     {
@@ -32,10 +41,12 @@ namespace LeftJoinRavenDB
             AddMap<PageTextElement>(baseElements => from baseElement in baseElements.Where(l=>l.Language=="en")
                 select new
                 {
+
                     Page = baseElement.Page,
                     Token = baseElement.Token,
                     WebtextBase = baseElement.Webtext,
-                    WebtextCompare =(string)null
+                    WebtextCompare = (string)null
+
                 });
 
             AddMap<PageTextElement>(compareElements => from compareElement in compareElements.Where(l=>l.Language=="sv")
@@ -43,7 +54,7 @@ namespace LeftJoinRavenDB
                 {
                     Page = compareElement.Page,
                     Token = compareElement.Token,
-                    WebtextBase =(string)null,
+                    WebtextBase = (string)null,
                     WebtextCompare = compareElement.Webtext
                 }
                 );
@@ -51,44 +62,47 @@ namespace LeftJoinRavenDB
                 group result by
                     new
                     {
-                        Page = result.Page,
-                        Token = result.Token
+                    Page = result.Page, Token = result.Token
                     }
                 into g
                 select new
                 {
-                    
-                    Page = g.Select(x => x.Page),
+
+                    Page = g.Select(x=>x.Page),
                     Token = g.Select(x => x.Token),
-                    WebtextBase = g.Select(x => x.WebtextBase).Where(x => x != null).First(),
-                    WebtextCompare = g.Select(x => x.WebtextCompare).Where(x => x != null).First(),
+                    WebtextBase =    g.Select(x => x.WebtextBase).Where(x => x != null).First() ?? g.Select(x => x.WebtextCompare).Where(x => x != null).First(),
+                    WebtextCompare = g.Select(x => x.WebtextBase).Where(x => x != null).First() ?? g.Select(x => x.WebtextCompare).Where(x => x != null).Last()
+
                 };
 
             Index(x => x.WebtextBase, FieldIndexing.Analyzed);
         }
     }
+    public class LeftJoinPageTextTranslationsCount : AbstractMultiMapIndexCreationTask<ComparePageTextElementCount>
+    {
+        public LeftJoinPageTextTranslationsCount()
+        {
+            AddMap<PageTextElement>(baseElements => 
+                from baseElement in baseElements.Where(l => l.Language == "en")
+                select new { Page = baseElement.Page, Token = baseElement.Token, baseElement.Webtext,WebtextCompare=(string)null, Count = 0 });
+
+            AddMap<PageTextElement>(compareElements => 
+                from compareElement in compareElements.Where(l => l.Language == "sv")
+                select new { Page = compareElement.Page, Token = compareElement.Token, Webtext = (string)null,WebtextCompare=compareElement.Webtext, Count = 1 }
+                );
+            Reduce = results => from result in results
+                                group result by
+                                    new{Page = result.Page,Token = result.Token}
+                                    into g
+                                    select new
+                                    {
+                                        Page = g.Select(x => x.Page).Where(x => x != null).First(),
+                                        Token = g.Select(x => x.Token).Where(x => x != null).First(),
+                                        Webtext = g.Select(x => x.Webtext).Where(x => x != null).First(),
+                                        WebtextCompare=g.Select(x => x.Webtext).Where(x => x != null).Last(),
+                                        Count = g.Sum( x => x.Count)
+                                    };
+            Index(x => x.Page, FieldIndexing.Analyzed);
+        }
+    }
 }
-//Url: "/indexes/LeftJoinPageTextTranslations"
-
-//System.InvalidOperationException: Map functions defined as part of a multi map index must return identical types.
-//Baseline map		: docs.PageTextElements.Select(baseElement => new {
-//    Page = baseElement.Page,
-//    Token = baseElement.Token,
-//    WebtextBase = baseElement.Webtext
-//})
-//Non matching map	: docs.PageTextElements.Select(compareElement => new {
-//    Page = compareElement.Page,
-//    Token = compareElement.Token,
-//    WebtextCompare = compareElement.Webtext
-//})
-
-//Common fields		: Page, Token, __document_id
-//Missing fields		: WebtextBase
-//Additional fields	: WebtextCompare
-//   at Raven.Database.Linq.DynamicViewCompiler.HandleMapFunction(ConstructorDeclaration ctor, String map) in c:\Builds\RavenDB-Stable\Raven.Database\Linq\DynamicViewCompiler.cs:line 224
-//   at Raven.Database.Linq.DynamicViewCompiler.TransformQueryToClass() in c:\Builds\RavenDB-Stable\Raven.Database\Linq\DynamicViewCompiler.cs:line 132
-//   at Raven.Database.Linq.DynamicViewCompiler.GenerateInstance() in c:\Builds\RavenDB-Stable\Raven.Database\Linq\DynamicViewCompiler.cs:line 568
-//   at Raven.Database.DocumentDatabase.PutIndex(String name, IndexDefinition definition) in c:\Builds\RavenDB-Stable\Raven.Database\DocumentDatabase.cs:line 1083
-//   at Raven.Database.Server.Responders.Index.Put(IHttpContext context, String index) in c:\Builds\RavenDB-Stable\Raven.Database\Server\Responders\Index.cs:line 83
-//   at Raven.Database.Server.HttpServer.DispatchRequest(IHttpContext ctx) in c:\Builds\RavenDB-Stable\Raven.Database\Server\HttpServer.cs:line 864
-//   at Raven.Database.Server.HttpServer.HandleActualRequest(IHttpContext ctx) in c:\Builds\RavenDB-Stable\Raven.Database\Server\HttpServer.cs:line 609
