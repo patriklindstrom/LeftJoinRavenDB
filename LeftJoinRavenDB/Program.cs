@@ -48,8 +48,8 @@ namespace LeftJoinRavenDB
                 foreach (var row in wt)
                 {
                     System.Console.WriteLine("{0}\t{1}\t{2}\t{3}", 
-                        row.BaseElement.Page,row.BaseElement.Token,row.BaseElement.Language,row.BaseElement.Webtext, 
-                        row.CompareElement.Page,row.CompareElement.Token,row.CompareElement.Language,row.CompareElement.Webtext );
+                        row.Page,row.Token,row.WebtextBase,row.WebtextCompare
+                        );
                 }
             }
         }
