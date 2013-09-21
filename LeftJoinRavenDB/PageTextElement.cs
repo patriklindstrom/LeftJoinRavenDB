@@ -102,7 +102,7 @@ namespace LeftJoinRavenDB
                                         WebtextCompare=g.Select(x => x.Webtext).Where(x => x != null).Last(),
                                         Count = g.Sum( x => x.Count)
                                     };
-            Index(x => x.Page, FieldIndexing.Analyzed);
+            Index(x => x.Webtext, FieldIndexing.Analyzed);
         }
     }
 }
