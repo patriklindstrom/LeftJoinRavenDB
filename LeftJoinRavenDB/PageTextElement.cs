@@ -39,12 +39,18 @@ namespace LeftJoinRavenDB
                     },
                     CompareElement = new
                     {
-                        Page = baseElement.Page,
-                        Token = baseElement.Token,
-                        Webtext = baseElement.Webtext,
-                        Language = baseElement.Language,
-                        Tranlator = baseElement.Translator,
-                        CreationTime = baseElement.CreationTime
+                        Page = String.Empty,
+                        Token = String.Empty,
+                        Webtext = String.Empty,
+                        Language = String.Empty,
+                        Tranlator = String.Empty,
+                        CreationTime = String.Empty
+                        //Page = baseElement.Page,
+                        //Token = baseElement.Token,
+                        //Webtext = baseElement.Webtext,
+                        //Language = baseElement.Language,
+                        //Tranlator = baseElement.Translator,
+                        //CreationTime = baseElement.CreationTime
                     }
                 });
 
@@ -53,12 +59,18 @@ namespace LeftJoinRavenDB
                 {
                     BaseElement = new
                     {
-                        Page = compareElement.Page,
-                        Token = compareElement.Token,
-                        Webtext = compareElement.Webtext,
-                        Language = compareElement.Language,
-                        Tranlator = compareElement.Translator,
-                        CreationTime = compareElement.CreationTime
+                        Page = String.Empty,
+                        Token = String.Empty,
+                        Webtext = String.Empty,
+                        Language = String.Empty,
+                        Tranlator = String.Empty,
+                        CreationTime = String.Empty
+                        //Page = compareElement.Page,
+                        //Token = compareElement.Token,
+                        //Webtext = compareElement.Webtext,
+                        //Language = compareElement.Language,
+                        //Tranlator = compareElement.Translator,
+                        //CreationTime = compareElement.CreationTime
                     },
                     CompareElement = new
                     {
