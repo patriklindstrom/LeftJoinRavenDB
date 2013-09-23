@@ -15,36 +15,45 @@ namespace LeftJoinRavenDB
       
         public int ClassCount { get; set; }
     }
-    public class TeacherCountsByStudent : AbstractMultiMapIndexCreationTask<TeacherStudentStats>
+
+    public class TeacherStudentLeftJoinIndex : AbstractMultiMapIndexCreationTask<TeacherStudentLeftJoinIndex.ReduceResult>
     {
-        public TeacherCountsByStudent()
+        public class ReduceResult
         {
-            AddMap<Teacher>(teachers => from teacher in teachers
-                select new
-                {
-                    TeacherName = teacher.Name,                
-                    ClassCount = 0
-                });
+            public string TeacherName;
+            public string[] Students;
+        }
+        public TeacherStudentLeftJoinIndex()
+        {
+            AddMap<Students>(studentsList =>
+                            from list in studentsList
+                            from student in list.List
+                            select new
+                            {
+                                TeacherName = student.HomeRoomTeacher,
+                                Students = new[] { student.Name }
+                            }
+                );
 
-            AddMap<Student>(students => from student in students
-                                         select new
-                                         {
-                                             TeacherName = student.HomeRoomTeacher,
-                                             ClassCount = 1
-                                         }
-                                            );
-            Reduce = results => from result in results
-                group result by result.TeacherName
-                into g
-                select new
-                {
-                    TeacherName = g.Select(x => x.TeacherName).Where(x => x != null).First(),
-                    ClassCount = g.Sum(x => x.ClassCount)
+            AddMap<Teachers>(teacherLists =>
+                            from list in teacherLists
+                            from teacher in list.List
+                            select new
+                            {
+                                TeacherName = teacher.Name,
+                                Students = new string[0]
+                            }
+            );
 
-                };
-
-
-            Index(x => x.TeacherName, FieldIndexing.Analyzed);
+            Reduce = results =>
+                     from reduceResult in results
+                     group reduceResult by reduceResult.TeacherName
+                         into g
+                         select new
+                         {
+                             TeacherName = g.Key,
+                             Students = g.SelectMany(x => x.Students)
+                         };
         }
     }
 }

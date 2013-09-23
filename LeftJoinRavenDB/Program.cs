@@ -40,7 +40,7 @@ namespace LeftJoinRavenDB
         {
             using (var session = store.OpenSession())
             {
-                var wt = session.Query<ComparePageTextElement, LeftJoinPageTextTranslations>()
+                var wt = session.Query<ComparePageTextElement, LeftJoinPageTextTranslationsCount>()
                     
                     ;
                 Console.WriteLine("Write BaseElement and CompareElement");
@@ -76,7 +76,7 @@ namespace LeftJoinRavenDB
         {
             using (var session = store.OpenSession())
             {
-                var tss = session.Query<TeacherStudentStats, TeacherCountsByStudent>()
+                var tss = session.Query<TeacherStudentStats, TeacherStudentLeftJoinIndex>()
                     .Where(x => x.TeacherName.StartsWith("Mrs Thatcher"))
                     ;
                 foreach (var row in tss)
@@ -132,8 +132,7 @@ namespace LeftJoinRavenDB
         private static void CreateRavenDBIndex(DocumentStore store)
         {
             //http://ravendb.net/docs/2.5/client-api/querying/static-indexes/defining-static-index
-            IndexCreation.CreateIndexes(typeof(TeacherCountsByStudent).Assembly, store);
-            IndexCreation.CreateIndexes(typeof(LeftJoinPageTextTranslations).Assembly, store);
+            IndexCreation.CreateIndexes(typeof(TeacherStudentLeftJoinIndex).Assembly, store);
             IndexCreation.CreateIndexes(typeof(LeftJoinPageTextTranslationsCount).Assembly, store);
         }
 
@@ -257,7 +256,7 @@ namespace LeftJoinRavenDB
         {
             
             
-            var teacherStudenList = from tList in teachers.ListRavenQueryableTeachers
+            var teacherStudenList = from tList in teachers.List
                                     join sList in students.List
                                     on tList.Name equals sList.HomeRoomTeacher into joinedList
                                     from sList in joinedList.DefaultIfEmpty(new Student() { Name = "-" })

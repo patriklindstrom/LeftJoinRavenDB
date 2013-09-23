@@ -11,6 +11,8 @@ namespace LeftJoinRavenDB
 {
     public class TeachersRavenDB : ITeachers
     {
+        private IRavenQueryable<Teacher> _list;
+
         public TeachersRavenDB(DocumentStore store)
         {
             using (IDocumentSession session =store.OpenSession())
@@ -23,5 +25,11 @@ namespace LeftJoinRavenDB
 
 
         public IRavenQueryable<Teacher> ListRavenQueryableTeachers { get; set; }
+
+        public IRavenQueryable<Teacher> List
+        {
+            get { return _list; }
+            set { _list = value; }
+        }
     }
 }

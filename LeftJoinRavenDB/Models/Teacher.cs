@@ -18,11 +18,11 @@ namespace LeftJoinRavenDB.Models
 
     public class Teachers : ITeachers
     {
-        public IRavenQueryable<Teacher> ListRavenQueryableTeachers { get; set; }
+        public IRavenQueryable<Teacher> List { get; set; }
     }
   public   interface ITeachers
   {
-       IRavenQueryable<Teacher> ListRavenQueryableTeachers { get; set; }
+      IRavenQueryable<Teacher> List { get; set; }
          
      }
 }
